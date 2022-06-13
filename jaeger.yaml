@@ -1,0 +1,35 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger
+  namespace: managment
+spec:
+  ingress:
+    enabled: false
+  strategy: production
+  collector:
+    maxReplicas: 6
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    options:
+      sampling:
+        strategies-reload-interval: 300s
+  storage:
+    type: elasticsearch
+    options:
+      es:
+        server-urls: https://xxxxx.ap-northeast-2.aws.elastic-cloud.com:9243
+        username: xxx
+        password: xxxxxxx
+        index-prefix: mainnet
+  sampling:
+    options:
+      default_strategy:
+        type: probabilistic
+        param: 0.0001
+        operation_strategies:
+          - operation: "health"
+            type: "probabilistic"
+            param: 0.0
